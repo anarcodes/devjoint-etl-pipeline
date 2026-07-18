@@ -17,4 +17,4 @@ services:
     volumes:
       - .:/app
     environment:
-      - DATABASE_URL=postgresql://user:password@db:5432/etl_database
+      - DATABASE_URL=postgresql://devjoint_user:password@db:5432/etl_database
