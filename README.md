@@ -1,12 +1,12 @@
-# Robust Python ETL Pipeline (Week 1 Assignment)
+# Python ETL Pipeline (1-ci Həftə Tapşırığı)
 
-A production-ready, fault-tolerant, and idempotent **Extract-Transform-Load (ETL)** pipeline built with Python, PostgreSQL, and Docker. This project satisfies all the core requirements and edge-case checkpoints for the Week 1 Data Engineering internship milestone.
+Bu layihə Python, PostgreSQL və Docker istifadə edilərək qurulmuş, istehsal mühitinə hazır (production-ready), xətalara dözümlü və idempotent Extract-Transform-Load (ETL) pipeline-dır. Layihə Data Engineering təcrübə proqramının 1-ci həftəsi üçün nəzərdə tutulmuş bütün əsas tələbləri və checkpoints əhatə edir.
 
 ---
 
-## 🏗️ Architecture & Data Flow
+## 🏗️ Arxitektura & Məlumat axını
 
-The pipeline sequentially extracts data from two heterogeneous sources (a local CSV file and an external Open API), applies robust cleansing and unification rules, and batches the result into a PostgreSQL instance using idempotent `UPSERT` operations.
+Pipeline iki müxtəlif mənbədən (yerli CSV faylı və xarici Open API) məlumatları ardıcıl şəkildə çıxarır, ciddi təmizləmə və unifikasiya qaydalarını tətbiq edir və nəticəni idempotent `UPSERT` əməliyyatları ilə PostgreSQL instansiyasına yükləyir.
 
 ```text
 +-------------------+      +-------------------+
@@ -31,24 +31,49 @@ The pipeline sequentially extracts data from two heterogeneous sources (a local 
 
 ---
 
-## 🚀 Key Features & Checkpoints Met
+## 🚀 Əsas Xüsusiyyətlər və İcra Olunmuş Mərhələlər
 
-*   **Checkpoint 1: Sequential Extraction (`Extract`)**
-    *   Extracts raw business metrics from local data sheets (`.csv`) and enriches them sequentially with live data fetched via HTTP requests from a public REST API.
-*   **Checkpoint 2: Data Cleansing & Unification (`Transform`)**
-    *   Enforces strict type casting, isolates and fills missing/null values, and merges both datasets seamlessly using a structured common identifier key.
-*   **Checkpoint 3: High-Performance Batch Loading (`Load`)**
-    *   Avoids sluggish row-by-row iteration. Utilizes optimized bulk execution (`psycopg2` / `SQLAlchemy` batch processing) to minimize network roundtrips to the database.
-*   **Checkpoint 4: Strict Idempotency (`Idempotency Trick`)**
-    *   Engineered to guarantee that **re-running the pipeline against the same source data yields exactly the same row count**. Handled natively via target table constraints and `ON CONFLICT (id) DO UPDATE` (Upsert) routines.
-*   **Checkpoint 5: Production Logging (`Logging`)**
-    *   Replaced all native `print()` statements with Python’s built-in `logging` module. Configured structured log layouts tracking timestamped execution phases across `INFO`, `WARNING`, and `ERROR` thresholds.
-*   **Checkpoint 6: Graceful Fault Tolerance (`Partial Failure Trick`)**
-    *   Configured with row-level error isolation. Corrupted lines, invalid schema shapes, or malformed data types are intercepted, logged into the system tracker, and skipped without halting or crashing the overall ingestion pipeline.
+**Mərhələ 1: Ardıcıl Məlumat Çıxarışı (`Extract`)**
+    *   Yerli verilənlər bazasından (`.csv`) xammal biznes göstəricilərini çıxarır və onları ictimai REST API vasitəsilə əldə edilən canlı məlumatlarla ardıcıl olaraq zənginləşdirir.
+
+**Mərhələ 2: Məlumatın Təmizlənməsi və Unifikasiyası (`Transform`)**
+    *   Ciddi tip çevrilmələrini (type casting) tətbiq edir, çatışmayan/null dəyərləri müəyyən edib doldurur və hər iki məlumat dəstini strukturlaşdırılmış ortaq identifikator açarı vasitəsilə birləşdirir.
+
+**Mərhələ 3: Yüksək Məhsuldarlıqlı Toplu Yükləmə (`Load`)**
+    *   Sətir-sətir iterasiyanın ləngliyindən qaçınır. Verilənlər bazası ilə şəbəkə dövriyyəsini minimuma endirmək üçün optimallaşdırılmış toplu icra (`psycopg2 / SQLAlchemy` batch processing) istifadə edir.
+
+**Mərhələ 4: İdempotentlik (`Idempotency Trick`)**
+    *   Pipeline-ın eyni məlumat mənbəyinə qarşı təkrar işə salınması zamanı tam olaraq eyni sayda **sətir** verəcəyinə zəmanət verir. Bu, hədəf cədvəl məhdudiyyətləri və `ON CONFLICT (id) DO UPDATE` (Upsert) rutinləri vasitəsilə təmin edilir.
+
+**Mərhələ 5: Production üçün Logging (`Logging`)**
+    *   Bütün standart `print()` funksiyaları Python-un daxili logging modulu ilə əvəz edilmişdir. `INFO, WARNING` və `ERROR` səviyyələri üzrə icra mərhələlərini izləyən strukturlaşdırılmış loq formatı konfiqurasiya edilmişdir.
+
+**Mərhələ 6: Xətalara Qarşı Davamlılıq (`Partial Failure Trick`)**
+    *   Sətir səviyyəsində xəta izolyasiyası ilə konfiqurasiya edilmişdir. Korlanmış sətirlər, yanlış sxem formaları və ya səhv məlumat tipləri aşkarlanır, sistem izləyicisində loqlaşdırılır və bütün pipeline-ın dayanmasına səbəb olmadan ötürülür.
 
 ---
 
-## 🛠️ Technology Stack
+## ▶️ Layihəni işə salma addımları
+
+1. Konteynerləri aktiv edirik:
+```bash
+docker-compose up --build
+```
+2. Bazaya daxil olub sətir sayını və məlumatları yoxlamaq üçün:
+    
+    ```bash
+    docker exec -it etl_postgres psql -U devjoint_user -d etl_database
+    ```
+
+    2.1. Bazada bu sorğunu icra edin:
+
+    ```sql
+    SELECT * FROM final_users_report;
+    ```
+
+---
+
+## 🛠️ İstifadə olunan texnologiyalar
 
 *   **Language:** Python 3.10+
 *   **Data Processing:** Pandas / NumPy
