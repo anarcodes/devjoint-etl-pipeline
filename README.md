@@ -57,7 +57,7 @@ Pipeline iki müxtəlif mənbədən (yerli CSV faylı və xarici Open API) məlu
 
 1. Konteynerləri aktiv edirik:
 ```bash
-docker-compose up --build
+docker-compose up -d
 ```
 2. Bazaya daxil olub sətir sayını və məlumatları yoxlamaq üçün:
     
